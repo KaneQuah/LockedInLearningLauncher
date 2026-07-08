@@ -5,6 +5,7 @@ LockedInLearning is a home-screen replacement (launcher) that makes you answer a
 ## Pages
 
 - [CSV Import Format](CSV-Import-Format.md) — how to format a CSV to bulk-import questions into a deck.
+- [Suggested CSV Generation Method](Suggested-CSV-Generation-Method.md) — using an AI chat assistant to generate a question bank CSV.
 - [Failure Modes](Failure-Modes.md) — what happens when you answer wrong, and how to configure it per deck.
 
 ## Why use it
