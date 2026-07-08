@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,16 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
+
+// Release signing is loaded from a local, untracked keystore.properties (see keystore.properties.example).
+// Falls back to an unsigned release build if it's absent, e.g. on a fresh clone of the public repo.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
+}
+val hasReleaseSigning = keystorePropertiesFile.exists()
 
 android {
     namespace = "com.lockedinlearning"
@@ -21,6 +33,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -28,6 +51,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
@@ -42,8 +68,8 @@ android {
         create("pro") {
             dimension = "tier"
             applicationIdSuffix = ".pro"
-            buildConfigField("int", "MAX_DECKS", "Int.MAX_VALUE")
-            buildConfigField("int", "MAX_CARDS", "Int.MAX_VALUE")
+            buildConfigField("int", "MAX_DECKS", "Integer.MAX_VALUE")
+            buildConfigField("int", "MAX_CARDS", "Integer.MAX_VALUE")
         }
     }
 

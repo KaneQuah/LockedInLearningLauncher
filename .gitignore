@@ -11,6 +11,12 @@
 *.apk
 *.aab
 
+# Release signing — never commit
+*.jks
+*.keystore
+keystore.properties
+/keystore/
+
 # Log/OS files
 *.log
 .DS_Store
