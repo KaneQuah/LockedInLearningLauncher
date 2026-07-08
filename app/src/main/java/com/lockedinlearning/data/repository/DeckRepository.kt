@@ -34,6 +34,9 @@ class DeckRepository @Inject constructor(
     fun observeQuestions(deckId: String): Flow<List<Question>> =
         questionDao.observeByDeck(deckId).map { entities -> entities.map { it.toDomain() } }
 
+    fun observeAllQuestions(): Flow<List<Question>> =
+        questionDao.observeAll().map { entities -> entities.map { it.toDomain() } }
+
     suspend fun getQuestionsByDeck(deckId: String): List<Question> =
         questionDao.getByDeck(deckId).map { it.toDomain() }
 

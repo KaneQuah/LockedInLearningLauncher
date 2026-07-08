@@ -32,10 +32,13 @@ class DeckViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            deckRepository.observeDecks().collect { decks ->
-                val counts = decks.associate { d ->
-                    d.id to deckRepository.getQuestionsByDeck(d.id).size
-                }
+            combine(
+                deckRepository.observeDecks(),
+                deckRepository.observeAllQuestions()
+            ) { decks, questions ->
+                val counts = questions.groupingBy { it.deckId }.eachCount()
+                decks to decks.associate { it.id to (counts[it.id] ?: 0) }
+            }.collect { (decks, counts) ->
                 _state.update { it.copy(decks = decks, questionCounts = counts) }
             }
         }

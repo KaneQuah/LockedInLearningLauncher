@@ -8,6 +8,9 @@ interface QuestionDao {
     @Query("SELECT * FROM questions WHERE deckId = :deckId ORDER BY masteryLevel ASC")
     fun observeByDeck(deckId: String): Flow<List<QuestionEntity>>
 
+    @Query("SELECT * FROM questions")
+    fun observeAll(): Flow<List<QuestionEntity>>
+
     @Query("SELECT * FROM questions WHERE deckId = :deckId")
     suspend fun getByDeck(deckId: String): List<QuestionEntity>
 
