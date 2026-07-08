@@ -44,7 +44,6 @@ MIT — see [LICENSE](LICENSE).
 
 If this project is useful to you, consider supporting its development:
 
-- GitHub Sponsors: _add your link here_
-- Buy Me a Coffee / Ko-fi: _add your link here_
+- Buy Me a Coffee / Ko-fi: https://ko-fi.com/kanequah
 
 Donations are optional and appreciated, not required to use or modify this software.
