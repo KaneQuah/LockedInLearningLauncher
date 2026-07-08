@@ -57,22 +57,6 @@ android {
         }
     }
 
-    flavorDimensions += "tier"
-    productFlavors {
-        create("free") {
-            dimension = "tier"
-            applicationIdSuffix = ".free"
-            buildConfigField("int", "MAX_DECKS", "1")
-            buildConfigField("int", "MAX_CARDS", "50")
-        }
-        create("pro") {
-            dimension = "tier"
-            applicationIdSuffix = ".pro"
-            buildConfigField("int", "MAX_DECKS", "Integer.MAX_VALUE")
-            buildConfigField("int", "MAX_CARDS", "Integer.MAX_VALUE")
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

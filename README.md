@@ -15,14 +15,13 @@ An Android home screen replacement (launcher) that makes you answer a study ques
 - Deck manager and question editor
 - CSV import for bulk-adding questions
 - Configurable gate/failure policy and streak tracking
-- Free / Pro product flavors (deck and card limits gated via build config)
 
 ## Building
 
 This is a standard Gradle-based Android project.
 
 ```bash
-./gradlew assembleFreeDebug   # or assembleProDebug
+./gradlew assembleDebug
 ```
 
 Requirements:
