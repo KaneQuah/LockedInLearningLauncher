@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="⏳"
+        android:textSize="64sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Wait a moment"
+        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.LIL.HeadlineMedium" />
+
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/penalty_progress"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:indicatorColor="@color/penalty_orange"
+            app:trackThickness="8dp"
+            app:trackColor="@color/app_surface"
+            app:indicatorSize="120dp"
+            android:max="60"
+            android:progress="60" />
+
+        <TextView
+            android:id="@+id/penalty_seconds_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/penalty_orange"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.LIL.HeadlineMedium"
+            tools:text="30s" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Think about it — try again soon"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textAppearance="@style/TextAppearance.LIL.BodyMedium" />
+
+</LinearLayout>

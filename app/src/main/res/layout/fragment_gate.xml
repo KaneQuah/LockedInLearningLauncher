@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/gate_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background">
+
+    <ViewFlipper
+        android:id="@+id/gate_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/gate_state_loading" />
+        <include layout="@layout/gate_state_question" />
+        <include layout="@layout/gate_state_question_flashcard" />
+        <include layout="@layout/gate_state_correct" />
+        <include layout="@layout/gate_state_wrong" />
+        <include layout="@layout/gate_state_penalty" />
+        <include layout="@layout/gate_state_bypass" />
+        <include layout="@layout/gate_state_lockout" />
+
+    </ViewFlipper>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_emergency_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        app:backgroundTint="?attr/colorErrorContainer"
+        app:srcCompat="@android:drawable/sym_action_call"
+        app:tint="?attr/colorOnErrorContainer"
+        android:contentDescription="Emergency call" />
+
+</FrameLayout>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LockedInLearning</string>
+    <string name="gate_hint_label">Hint</string>
+    <string name="gate_emergency_call">Emergency Call</string>
+    <string name="gate_submit">Submit</string>
+    <string name="gate_correct">Correct!</string>
+    <string name="gate_incorrect">Not quite…</string>
+    <string name="gate_bypass_message">Better luck next time 👀</string>
+    <string name="gate_locked">Locked</string>
+    <string name="streak_label">Streak</string>
+    <string name="today_correct_label">Today</string>
+</resources>

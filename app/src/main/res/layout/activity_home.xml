@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.lockedinlearning.launcher3.view.DragLayer
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/home_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:fitsSystemWindows="false">
+
+        <com.lockedinlearning.ui.home.TopStatusRowView
+            android:id="@+id/top_status_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="10dp" />
+
+        <com.lockedinlearning.launcher3.view.Workspace
+            android:id="@+id/workspace"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.lockedinlearning.launcher3.view.Hotseat
+            android:id="@+id/hotseat"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/hotseat_height"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/bg_dock" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/all_apps_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/gate_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</com.lockedinlearning.launcher3.view.DragLayer>

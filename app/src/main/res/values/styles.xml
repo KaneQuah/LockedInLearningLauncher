@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Text appearances ported from ui/theme/Type.kt's AppTypography overrides -->
+    <style name="TextAppearance.LIL.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="TextAppearance.LIL.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.LIL.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.LIL.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Icon cell label — 12sp single-line, marquee ellipsize on overflow -->
+    <style name="TextAppearance.LIL.IconLabel" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">@dimen/icon_label_text_size</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+    </style>
+
+    <!-- M3 anchored popup menu shape (surfaceContainer role, 16dp corners) -->
+    <style name="ShapeAppearance.LIL.Popup" parent="ShapeAppearance.Material3.Corner.Large">
+        <item name="cornerSize">@dimen/popup_corner_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.LIL.Folder" parent="ShapeAppearance.Material3.Corner.ExtraLarge">
+        <item name="cornerSize">@dimen/folder_corner_radius</item>
+    </style>
+</resources>
