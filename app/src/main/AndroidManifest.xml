@@ -5,8 +5,10 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission" />
 
+    <!-- A launcher only needs to see launchable apps, which the <queries> intent below grants.
+         QUERY_ALL_PACKAGES is deliberately NOT declared: it's a Play "sensitive" permission and,
+         combined with a sideloaded install, is a primary Play Protect block trigger. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -42,16 +44,6 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
             android:launchMode="singleTop" />
-
-        <!-- Notification badges — user must grant via Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS -->
-        <service
-            android:name=".notifications.LauncherNotificationListenerService"
-            android:exported="true"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
 
         <!-- WorkManager StreakWorker -->
         <provider

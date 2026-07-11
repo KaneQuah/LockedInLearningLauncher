@@ -15,7 +15,6 @@ import com.lockedinlearning.launcher3.model.FavoriteItemEntity
 import com.lockedinlearning.launcher3.model.FavoritesDao
 import com.lockedinlearning.launcher3.model.GridOccupancy
 import com.lockedinlearning.launcher3.model.ItemInfo
-import com.lockedinlearning.notifications.NotificationBadgeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -38,9 +37,7 @@ data class HomeUiState(
     val desktopItems: List<ItemInfo> = emptyList(),
     /** Hotseat items, ordered by slot (cellX 0-4). */
     val hotseatItems: List<ItemInfo> = emptyList(),
-    val iconAppearance: IconAppearance = IconAppearance(),
-    val notificationBadges: Map<String, Int> = emptyMap(),
-    val showBadgeCount: Boolean = true
+    val iconAppearance: IconAppearance = IconAppearance()
 )
 
 @HiltViewModel
@@ -49,8 +46,7 @@ class HomeViewModel @Inject constructor(
     private val progressRepository: ProgressRepository,
     private val prefsStore: GatePreferencesDataStore,
     private val launcherPrefs: LauncherPreferencesDataStore,
-    private val favoritesDao: FavoritesDao,
-    private val badgeRepository: NotificationBadgeRepository
+    private val favoritesDao: FavoritesDao
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeUiState())
@@ -71,10 +67,7 @@ class HomeViewModel @Inject constructor(
         val dailyGoal: Int,
         val gateDisabledUntil: Long,
         val iconAppearance: IconAppearance,
-        val notificationBadgesEnabled: Boolean,
-        val showBadgeCount: Boolean,
-        val apps: List<AppInfo>,
-        val badges: Map<String, Int>
+        val apps: List<AppInfo>
     )
 
     init {
@@ -84,18 +77,14 @@ class HomeViewModel @Inject constructor(
                 progressRepository.observeTodayCorrect(),
                 prefsStore.prefsFlow,
                 launcherPrefs.prefsFlow,
-                installedApps,
-                badgeRepository.badges
-            ) { todayCorrect, gatePrefs, launcher, apps, badges ->
+                installedApps
+            ) { todayCorrect, gatePrefs, launcher, apps ->
                 Snapshot(
                     todayCorrect = todayCorrect,
                     dailyGoal = gatePrefs.dailyGoal,
                     gateDisabledUntil = gatePrefs.disableUntilEpoch,
                     iconAppearance = IconAppearance(launcher.iconShape, launcher.iconSizeScale, launcher.showIconLabels),
-                    notificationBadgesEnabled = launcher.notificationBadgesEnabled,
-                    showBadgeCount = launcher.notificationBadgeShowCount,
-                    apps = apps,
-                    badges = badges
+                    apps = apps
                 )
             }
             combine(base, favoritesDao.observeAll()) { snap, allRows -> snap to allRows }
@@ -133,9 +122,7 @@ class HomeViewModel @Inject constructor(
                             installedApps = snap.apps,
                             desktopItems = desktopRows.mapNotNull(::toItemInfo),
                             hotseatItems = hotseatRows.mapNotNull(::toItemInfo),
-                            iconAppearance = snap.iconAppearance,
-                            notificationBadges = if (snap.notificationBadgesEnabled) snap.badges else emptyMap(),
-                            showBadgeCount = snap.showBadgeCount
+                            iconAppearance = snap.iconAppearance
                         )
                     }
                 }

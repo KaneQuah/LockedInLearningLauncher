@@ -23,6 +23,8 @@ interface DragListener {
     fun onDesktopDrop(itemId: Long, cellX: Int, cellY: Int)
     fun onHotseatDrop(itemId: Long, slot: Int)
     fun onFolderFusion(anchorItemId: Long, draggedItemId: Long)
+    /** A dragged app was dropped onto an existing folder — add it to that folder's contents. */
+    fun onAddToFolder(folderId: Long, draggedItemId: Long)
     fun onRemove(itemId: Long)
     /** A long-press fired (the icon lifted) but the finger never moved past tap slop before
      *  release — stock Android shows the icon's context menu (Remove/App info, or for a folder:
@@ -46,8 +48,9 @@ interface DragListener {
  *
  * The Hotseat's 5-slot cap falls out of this naturally rather than needing separate overflow
  * bookkeeping: [Hotseat] only has 5 physical slots, so a drop always resolves to one of those —
- * landing on an empty slot places it, landing on an occupied slot either fuses into a folder
- * (if the occupant is a plain app) or is rejected/snapped-back (anything else, e.g. a folder).
+ * landing on an empty slot places it, landing on an occupied slot is rejected/snapped-back. The
+ * dock never holds folders, so folder fusion is disabled there (an occupied slot can't grow a
+ * folder), and a dragged folder can't be dropped into the dock at all.
  */
 class DragController(
     private val dragLayer: DragLayer,
@@ -147,6 +150,7 @@ class DragController(
                 is DropTarget.Desktop -> listener.onDesktopDrop(item.itemId, target.cellX, target.cellY)
                 is DropTarget.HotseatSlot -> listener.onHotseatDrop(item.itemId, target.slot)
                 is DropTarget.Fusion -> listener.onFolderFusion(target.anchorId, item.itemId)
+                is DropTarget.AddToFolder -> listener.onAddToFolder(target.folderId, item.itemId)
                 DropTarget.Remove -> listener.onRemove(item.itemId)
                 DropTarget.Invalid -> Unit // snap back: state unchanged, next render restores the original position
             }
@@ -171,6 +175,7 @@ class DragController(
         data class Desktop(val cellX: Int, val cellY: Int) : DropTarget()
         data class HotseatSlot(val slot: Int) : DropTarget()
         data class Fusion(val anchorId: Long) : DropTarget()
+        data class AddToFolder(val folderId: Long) : DropTarget()
         data object Remove : DropTarget()
         data object Invalid : DropTarget()
     }
@@ -202,16 +207,19 @@ class DragController(
     private fun resolveDropTarget(rawX: Float, rawY: Float, item: DraggableItem): DropTarget {
         if (isInRemoveZone(rawY)) return DropTarget.Remove
 
+        // The dragged item's own type — a plain app can fuse/join folders, whereas a folder or
+        // widget cannot (and folders are barred from the dock entirely).
+        val draggedIsApp = (listener.currentDesktopItems() + listener.currentHotseatItems())
+            .find { it.id == item.itemId }?.itemType == LauncherSettings.ITEM_TYPE_APPLICATION
+
         val hotseatLoc = IntArray(2).also { hotseat.getLocationOnScreen(it) }
         if (rawY >= hotseatLoc[1] && rawY <= hotseatLoc[1] + hotseat.height) {
+            // The dock never holds folders, so only apps may land here and occupied slots are
+            // rejected outright (no fusion — that would spawn a folder in the dock).
+            if (!draggedIsApp) return DropTarget.Invalid
             val (slot, _) = hotseat.cellForPosition(rawX - hotseatLoc[0], 0f)
             val occupant = listener.currentHotseatItems().find { it.cellX == slot && it.id != item.itemId }
-            return when {
-                occupant == null -> DropTarget.HotseatSlot(slot)
-                occupant.itemType == LauncherSettings.ITEM_TYPE_APPLICATION && item.spanX == 1 && item.spanY == 1 ->
-                    DropTarget.Fusion(occupant.id)
-                else -> DropTarget.Invalid
-            }
+            return if (occupant == null) DropTarget.HotseatSlot(slot) else DropTarget.Invalid
         }
 
         val wsLoc = IntArray(2).also { workspace.getLocationOnScreen(it) }
@@ -232,8 +240,11 @@ class DragController(
                     } else {
                         DropTarget.Desktop(cellX, cellY)
                     }
-                occupant.itemType == LauncherSettings.ITEM_TYPE_APPLICATION && item.spanX == 1 && item.spanY == 1 ->
-                    DropTarget.Fusion(occupant.id)
+                // Only an app can be dropped onto another item: onto a plain app it fuses into a
+                // new folder; onto an existing folder it joins that folder's contents.
+                !draggedIsApp -> DropTarget.Invalid
+                occupant.itemType == LauncherSettings.ITEM_TYPE_APPLICATION -> DropTarget.Fusion(occupant.id)
+                occupant.itemType == LauncherSettings.ITEM_TYPE_FOLDER -> DropTarget.AddToFolder(occupant.id)
                 else -> DropTarget.Invalid
             }
         }

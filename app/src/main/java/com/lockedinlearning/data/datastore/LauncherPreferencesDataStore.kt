@@ -19,7 +19,7 @@ val Context.launcherDataStore: DataStore<Preferences> by preferencesDataStore(na
 enum class IconShape { SYSTEM_DEFAULT, CIRCLE, SQUIRCLE, ROUNDED_SQUARE }
 
 /**
- * Global, app-wide icon-appearance/badge display preferences only. Per-item PLACEMENT
+ * Global, app-wide icon-appearance preferences only. Per-item PLACEMENT
  * (dock slots, folders, widget positions, home-screen layout) lives in the Room-backed
  * `favorites` table (see launcher3.model.FavoriteItemEntity/FavoritesDao) — that's spatial
  * data, not a rendering-config toggle, so it doesn't belong in this DataStore.
@@ -27,9 +27,7 @@ enum class IconShape { SYSTEM_DEFAULT, CIRCLE, SQUIRCLE, ROUNDED_SQUARE }
 data class LauncherPreferences(
     val iconShape: IconShape = IconShape.SYSTEM_DEFAULT,
     val iconSizeScale: Float = 1.0f,
-    val showIconLabels: Boolean = true,
-    val notificationBadgesEnabled: Boolean = false,
-    val notificationBadgeShowCount: Boolean = true
+    val showIconLabels: Boolean = true
 )
 
 @Singleton
@@ -40,8 +38,6 @@ class LauncherPreferencesDataStore @Inject constructor(
         val ICON_SHAPE = stringPreferencesKey("icon_shape")
         val ICON_SIZE_SCALE = floatPreferencesKey("icon_size_scale")
         val SHOW_ICON_LABELS = booleanPreferencesKey("show_icon_labels")
-        val NOTIFICATION_BADGES_ENABLED = booleanPreferencesKey("notification_badges_enabled")
-        val NOTIFICATION_BADGE_SHOW_COUNT = booleanPreferencesKey("notification_badge_show_count")
     }
 
     val prefsFlow: Flow<LauncherPreferences> = context.launcherDataStore.data.map { prefs ->
@@ -50,9 +46,7 @@ class LauncherPreferencesDataStore @Inject constructor(
                 ?.let { runCatching { IconShape.valueOf(it) }.getOrNull() }
                 ?: IconShape.SYSTEM_DEFAULT,
             iconSizeScale = prefs[Keys.ICON_SIZE_SCALE] ?: 1.0f,
-            showIconLabels = prefs[Keys.SHOW_ICON_LABELS] ?: true,
-            notificationBadgesEnabled = prefs[Keys.NOTIFICATION_BADGES_ENABLED] ?: false,
-            notificationBadgeShowCount = prefs[Keys.NOTIFICATION_BADGE_SHOW_COUNT] ?: true
+            showIconLabels = prefs[Keys.SHOW_ICON_LABELS] ?: true
         )
     }
 
@@ -66,13 +60,5 @@ class LauncherPreferencesDataStore @Inject constructor(
 
     suspend fun setShowIconLabels(show: Boolean) = context.launcherDataStore.edit {
         it[Keys.SHOW_ICON_LABELS] = show
-    }
-
-    suspend fun setNotificationBadgesEnabled(enabled: Boolean) = context.launcherDataStore.edit {
-        it[Keys.NOTIFICATION_BADGES_ENABLED] = enabled
-    }
-
-    suspend fun setNotificationBadgeShowCount(showCount: Boolean) = context.launcherDataStore.edit {
-        it[Keys.NOTIFICATION_BADGE_SHOW_COUNT] = showCount
     }
 }

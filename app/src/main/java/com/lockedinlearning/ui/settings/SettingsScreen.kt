@@ -40,9 +40,6 @@ fun SettingsNavHost(
     onIconShapeChange: (IconShape) -> Unit,
     onIconSizeChange: (Float) -> Unit,
     onShowLabelsToggle: (Boolean) -> Unit,
-    onNotificationBadgesToggle: (Boolean) -> Unit,
-    onNotificationBadgeShowCountToggle: (Boolean) -> Unit,
-    onRequestNotificationAccess: () -> Unit,
     onNavigate: (SettingsScreen) -> Unit,
     onNavigateBack: () -> Unit,
     onBack: () -> Unit
@@ -70,9 +67,6 @@ fun SettingsNavHost(
             onIconShapeChange = onIconShapeChange,
             onIconSizeChange = onIconSizeChange,
             onShowLabelsToggle = onShowLabelsToggle,
-            onNotificationBadgesToggle = onNotificationBadgesToggle,
-            onNotificationBadgeShowCountToggle = onNotificationBadgeShowCountToggle,
-            onRequestNotificationAccess = onRequestNotificationAccess,
             onBack = onBack
         )
         SettingsScreen.DISABLE_PICKER -> DisablePicker(
@@ -152,9 +146,6 @@ fun MainSettingsScreen(
     onIconShapeChange: (IconShape) -> Unit,
     onIconSizeChange: (Float) -> Unit,
     onShowLabelsToggle: (Boolean) -> Unit,
-    onNotificationBadgesToggle: (Boolean) -> Unit,
-    onNotificationBadgeShowCountToggle: (Boolean) -> Unit,
-    onRequestNotificationAccess: () -> Unit,
     onBack: () -> Unit
 ) {
     var showPinDialog by remember { mutableStateOf(false) }
@@ -249,35 +240,6 @@ fun MainSettingsScreen(
                 subtitle = "Show app names under icons"
             ) {
                 Switch(checked = state.showIconLabels, onCheckedChange = onShowLabelsToggle)
-            }
-            SettingsRow(
-                label = "Notification badges",
-                subtitle = if (state.notificationAccessGranted) {
-                    "Show a dot/number on app icons with notifications"
-                } else {
-                    "Requires notification access — tap to grant in Settings"
-                }
-            ) {
-                Switch(
-                    checked = state.notificationBadgesEnabled && state.notificationAccessGranted,
-                    onCheckedChange = { enabled ->
-                        if (enabled && !state.notificationAccessGranted) {
-                            onRequestNotificationAccess()
-                        }
-                        onNotificationBadgesToggle(enabled)
-                    }
-                )
-            }
-            if (state.notificationBadgesEnabled) {
-                SettingsRow(
-                    label = "Badge count",
-                    subtitle = "Show a number instead of a plain dot"
-                ) {
-                    Switch(
-                        checked = state.notificationBadgeShowCount,
-                        onCheckedChange = onNotificationBadgeShowCountToggle
-                    )
-                }
             }
 
             // Active deck

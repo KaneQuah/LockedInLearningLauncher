@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 /**
  * The "All Apps" drawer — reached by swiping up from Home (see RevealGestureDetector) or the
  * dedicated handle. Deliberately shares no UI with the top status row / Gate: it observes
- * HomeViewModel (scoped to the host Activity) only for the installed-app list, icon appearance,
- * and badges — never streak/gate state — so the S-09 top row can never leak into this surface.
+ * HomeViewModel (scoped to the host Activity) only for the installed-app list and icon
+ * appearance — never streak/gate state — so the S-09 top row can never leak into this surface.
  */
 @AndroidEntryPoint
 class AllAppsFragment : Fragment() {
@@ -98,8 +98,6 @@ class AllAppsFragment : Fragment() {
                 homeViewModel.state.collect { state ->
                     sortedApps = state.installedApps.sortedBy { it.label.lowercase() }
                     adapter.appearance = state.iconAppearance
-                    adapter.notificationBadges = state.notificationBadges
-                    adapter.showBadgeCount = state.showBadgeCount
                     applyFilter(searchField.text?.toString().orEmpty())
                 }
             }

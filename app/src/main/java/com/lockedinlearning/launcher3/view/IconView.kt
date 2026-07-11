@@ -21,8 +21,8 @@ import com.lockedinlearning.data.datastore.IconShape
 import com.lockedinlearning.ui.home.IconAppearance
 
 /**
- * Composite app-icon cell (icon + optional notification badge + optional 12sp marquee label),
- * used inside Workspace/Hotseat cells, folder previews, and the All Apps drawer list.
+ * Composite app-icon cell (icon + optional 12sp marquee label), used inside Workspace/Hotseat
+ * cells, folder previews, and the All Apps drawer list.
  * Touch target is enforced at [com.lockedinlearning.R.dimen.touch_target_min] (48dp) via padding
  * on the root, regardless of the visual icon size chosen in Settings.
  */
@@ -32,7 +32,6 @@ class IconView @JvmOverloads constructor(
 ) : LinearLayout(context, attrs) {
 
     private val imageView: ShapeableImageView
-    private val badgeView: TextView
     private val labelView: TextView
 
     init {
@@ -44,16 +43,13 @@ class IconView @JvmOverloads constructor(
         setPadding(paddingLeft, 8.dp, paddingRight, 4.dp)
         LayoutInflater.from(context).inflate(R.layout.view_icon, this, true)
         imageView = findViewById(R.id.icon_image)
-        badgeView = findViewById(R.id.icon_badge)
         labelView = findViewById(R.id.icon_label)
     }
 
     fun bind(
         label: String,
         icon: Drawable?,
-        appearance: IconAppearance,
-        badgeCount: Int = 0,
-        showBadgeCount: Boolean = true
+        appearance: IconAppearance
     ) {
         imageView.setImageDrawable(icon)
         imageView.shapeAppearanceModel = appearance.toShapeAppearanceModel(resources.getDimension(R.dimen.icon_size) / 2f)
@@ -66,11 +62,6 @@ class IconView @JvmOverloads constructor(
         labelView.text = label
         labelView.isVisible = appearance.showLabels
         contentDescription = label
-
-        badgeView.isVisible = badgeCount > 0
-        if (badgeCount > 0) {
-            badgeView.text = if (showBadgeCount) (if (badgeCount > 9) "9+" else badgeCount.toString()) else ""
-        }
     }
 
     private val Int.dp: Int get() = (this * resources.displayMetrics.density).toInt()

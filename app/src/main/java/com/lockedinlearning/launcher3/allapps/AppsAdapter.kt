@@ -15,8 +15,6 @@ class AppsAdapter(
 ) : RecyclerView.Adapter<AppsAdapter.ViewHolder>() {
 
     var appearance: IconAppearance = IconAppearance()
-    var notificationBadges: Map<String, Int> = emptyMap()
-    var showBadgeCount: Boolean = true
 
     private var items: List<AppInfo> = emptyList()
 
@@ -48,9 +46,7 @@ class AppsAdapter(
         holder.iconView.bind(
             label = app.label,
             icon = icon,
-            appearance = appearance,
-            badgeCount = notificationBadges[app.packageName] ?: 0,
-            showBadgeCount = showBadgeCount
+            appearance = appearance
         )
         holder.iconView.setOnClickListener { onClick(app) }
         holder.iconView.setOnLongClickListener { onLongClick(app); true }

@@ -210,6 +210,8 @@ class HomeActivity : AppCompatActivity(), DragListener {
     override fun onHotseatDrop(itemId: Long, slot: Int) = homeViewModel.moveHotseatItem(itemId, slot)
     override fun onFolderFusion(anchorItemId: Long, draggedItemId: Long) =
         homeViewModel.createFolder("Folder", anchorItemId, draggedItemId)
+    override fun onAddToFolder(folderId: Long, draggedItemId: Long) =
+        homeViewModel.addToFolder(folderId, draggedItemId)
     override fun onRemove(itemId: Long) = homeViewModel.removeFromHome(itemId)
 
     override fun onLongPressWithoutDrag(itemId: Long, anchorView: View) {
@@ -293,9 +295,7 @@ class HomeActivity : AppCompatActivity(), DragListener {
                     bind(
                         label = item.label,
                         icon = loadIcon(pkg),
-                        appearance = state.iconAppearance,
-                        badgeCount = state.notificationBadges[pkg] ?: 0,
-                        showBadgeCount = state.showBadgeCount
+                        appearance = state.iconAppearance
                     )
                     setOnClickListener { launchApp(pkg) }
                 }

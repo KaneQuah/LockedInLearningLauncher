@@ -1,7 +1,5 @@
 package com.lockedinlearning.ui.settings
 
-import android.content.Context
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lockedinlearning.data.datastore.GatePreferencesDataStore
@@ -10,7 +8,6 @@ import com.lockedinlearning.data.datastore.LauncherPreferencesDataStore
 import com.lockedinlearning.data.repository.DeckRepository
 import com.lockedinlearning.domain.model.Deck
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.mindrot.jbcrypt.BCrypt
@@ -29,18 +26,13 @@ data class SettingsUiState(
     val screen: SettingsScreen = SettingsScreen.PIN_GATE,
     val iconShape: IconShape = IconShape.SYSTEM_DEFAULT,
     val iconSizeScale: Float = 1.0f,
-    val showIconLabels: Boolean = true,
-    val notificationBadgesEnabled: Boolean = false,
-    val notificationBadgeShowCount: Boolean = true,
-    /** Whether the OS has actually granted notification-listener access — separate from the app-level toggle above. */
-    val notificationAccessGranted: Boolean = false
+    val showIconLabels: Boolean = true
 )
 
 enum class SettingsScreen { PIN_GATE, MAIN, DISABLE_PICKER, DECK_MANAGER, QUESTION_EDITOR, PROGRESS }
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val prefsStore: GatePreferencesDataStore,
     private val deckRepository: DeckRepository,
     private val launcherPrefs: LauncherPreferencesDataStore
@@ -74,28 +66,11 @@ class SettingsViewModel @Inject constructor(
                         },
                         iconShape = launcher.iconShape,
                         iconSizeScale = launcher.iconSizeScale,
-                        showIconLabels = launcher.showIconLabels,
-                        notificationBadgesEnabled = launcher.notificationBadgesEnabled,
-                        notificationBadgeShowCount = launcher.notificationBadgeShowCount
+                        showIconLabels = launcher.showIconLabels
                     )
                 }
             }
         }
-        refreshNotificationAccessState()
-    }
-
-    /** Re-checks whether the OS currently grants this app notification-listener access. Call from onResume. */
-    fun refreshNotificationAccessState() {
-        val granted = NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.packageName)
-        _state.update { it.copy(notificationAccessGranted = granted) }
-    }
-
-    fun setNotificationBadgesEnabled(enabled: Boolean) {
-        viewModelScope.launch { launcherPrefs.setNotificationBadgesEnabled(enabled) }
-    }
-
-    fun setNotificationBadgeShowCount(showCount: Boolean) {
-        viewModelScope.launch { launcherPrefs.setNotificationBadgeShowCount(showCount) }
     }
 
     fun setIconShape(shape: IconShape) {

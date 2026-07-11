@@ -1,8 +1,6 @@
 package com.lockedinlearning.ui.settings
 
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -13,13 +11,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class SettingsActivity : ComponentActivity() {
     private val viewModel: SettingsViewModel by viewModels()
-
-    override fun onResume() {
-        super.onResume()
-        // There's no grant broadcast for notification-listener access, so re-check on
-        // every resume (covers the user returning from the system Settings screen).
-        viewModel.refreshNotificationAccessState()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +32,6 @@ class SettingsActivity : ComponentActivity() {
                     onIconShapeChange = viewModel::setIconShape,
                     onIconSizeChange = viewModel::setIconSizeScale,
                     onShowLabelsToggle = viewModel::setShowIconLabels,
-                    onNotificationBadgesToggle = viewModel::setNotificationBadgesEnabled,
-                    onNotificationBadgeShowCountToggle = viewModel::setNotificationBadgeShowCount,
-                    onRequestNotificationAccess = {
-                        runCatching {
-                            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-                        }
-                    },
                     onNavigate = viewModel::navigateTo,
                     onNavigateBack = viewModel::navigateBack,
                     onBack = { finish() }
